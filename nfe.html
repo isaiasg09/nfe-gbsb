@@ -343,6 +343,10 @@
         font-size: 8px !important;
         padding-top: 8px !important;
       }
+
+      .boxProdutoServico tbody tr td {
+        
+      }
     </style>
     <!-- /Header -->
     <!-- Recebimentos -->
@@ -403,7 +407,7 @@
                 <p class="mb2">Documento auxiliar da Nota Fiscal Eletrônica</p>
                 <p class="entradaSaida mb2">
                   <span class="identificacao">
-                    <span>[ds_code_operation_type]</span>
+                    <span id="tipo_operacao">[ds_code_operation_type]</span>
                   </span>
                   <span class="legenda">
                     <span>0 - Entrada</span>
@@ -516,11 +520,13 @@
                     <tr>
                       <td>
                         <span class="nf-label">NOME/RAZÃO SOCIAL</span>
-                        <span class="info">[ds_client_receiver_name]</span>
+                        <span class="info" id="cliente_nome"
+                          >[ds_client_receiver_name]</span
+                        >
                       </td>
                       <td style="width: 40mm">
                         <span class="nf-label">CNPJ/CPF</span>
-                        <span class="info">[nl_client_cnpj_cpf]</span>
+                        <span class="info" id="cnpj">[nl_client_cnpj_cpf]</span>
                       </td>
                     </tr>
                   </tbody>
@@ -528,7 +534,7 @@
               </td>
               <td style="width: 22mm">
                 <span class="nf-label">DATA DE EMISSÃO</span>
-                <span class="info">[dt_invoice_issue]</span>
+                <span class="info" id="data_emissao">[dt_invoice_issue]</span>
               </td>
             </tr>
             <tr>
@@ -538,15 +544,19 @@
                     <tr>
                       <td>
                         <span class="nf-label">ENDEREÇO</span>
-                        <span class="info">[ds_client_address]</span>
+                        <span class="info" id="endereco"
+                          >[ds_client_address]</span
+                        >
                       </td>
                       <td style="width: 47mm">
                         <span class="nf-label">BAIRRO/DISTRITO</span>
-                        <span class="info">[ds_client_neighborhood]</span>
+                        <span class="info" id="bairro"
+                          >[ds_client_neighborhood]</span
+                        >
                       </td>
                       <td style="width: 37.2 mm">
                         <span class="nf-label">CEP</span>
-                        <span class="info">[nu_client_cep]</span>
+                        <span class="info" id="cep">[nu_client_cep]</span>
                       </td>
                     </tr>
                   </tbody>
@@ -554,7 +564,7 @@
               </td>
               <td>
                 <span class="nf-label">DATA DE ENTR./SAÍDA</span>
-                <span class="info">[dt_input_output]</span>
+                <span class="info" id="data_operacao">[dt_input_output]</span>
               </td>
             </tr>
             <tr>
@@ -569,15 +579,19 @@
                     <tr>
                       <td>
                         <span class="nf-label">MUNICÍPIO</span>
-                        <span class="info">[ds_client_city_name]</span>
+                        <span class="info" id="municipio"
+                          >[ds_client_city_name]</span
+                        >
                       </td>
                       <td style="width: 34mm">
                         <span class="nf-label">FONE/FAX</span>
-                        <span class="info">[nl_client_phone_number]</span>
+                        <span class="info" id="telefone"
+                          >[nl_client_phone_number]</span
+                        >
                       </td>
                       <td style="width: 28mm">
                         <span class="nf-label">UF</span>
-                        <span class="info">[ds_client_uf]</span>
+                        <span class="info" id="uf">[ds_client_uf]</span>
                       </td>
                       <td style="width: 51mm">
                         <span class="nf-label">INSCRIÇÃO ESTADUAL</span>
@@ -589,7 +603,7 @@
               </td>
               <td>
                 <span class="nf-label">HORA ENTR./SAÍDA</span>
-                <span id="info">[hr_input_output]</span>
+                <span id="info"></span>
               </td>
             </tr>
           </tbody>
@@ -644,7 +658,9 @@
                 </td>
                 <td>
                   <span class="nf-label label-small">V. TOTAL DE PRODUTOS</span>
-                  <span class="info">[vl_total_prod]</span>
+                  <span class="info" id="valor_total_produtos"
+                    >[vl_total_prod]</span
+                  >
                 </td>
               </tr>
               <tr>
@@ -866,7 +882,7 @@
             <tr>
               <td class="field infoComplementar">
                 <span class="nf-label">INFORMAÇÕES COMPLEMENTARES</span>
-                <span>[ds_additional_information]</span>
+                <span></span>
               </td>
               <td class="field reservaFisco" style="width: 85mm; height: 24mm">
                 <span class="nf-label">RESERVA AO FISCO</span>
@@ -891,5 +907,53 @@
         </footer>
       </div>
     </div>
+
+    <script>
+      function getValues() {
+        var params = new URLSearchParams(window.location.search);
+
+        var nome = params.get("nome");
+        var cnpj = params.get("cnpj");
+        var telefone = params.get("telefone");
+        var cep = params.get("cep");
+        var endereco = params.get("endereco");
+        var bairro = params.get("bairro");
+        var uf = params.get("uf");
+        var municipio = params.get("municipio");
+        var tipo_operacao = params.get("tipo_operacao");
+        var data_operacao = params.get("data_operacao");
+        var items = JSON.parse(params.get("items"));
+
+        console.log(
+          nome,
+          cnpj,
+          telefone,
+          cep,
+          endereco,
+          bairro,
+          uf,
+          municipio,
+          tipo_operacao,
+          data_operacao,
+          items
+        );
+
+        document.getElementById("tipo_operacao").innerText = tipo_operacao;
+        document.getElementById("cliente_nome").innerText = nome;
+        document.getElementById("cnpj").innerText = cnpj;
+        document.getElementById("endereco").innerText = endereco;
+        document.getElementById("bairro").innerText = bairro;
+        document.getElementById("cep").innerText = cep;
+        document.getElementById("data_operacao").innerText = data_operacao;
+        document.getElementById("municipio").innerText = municipio;
+        document.getElementById("telefone").innerText = telefone;
+        document.getElementById("uf").innerText = uf;
+
+        document.getElementById("data_emissao").innerText =
+          new Date().toLocaleDateString("pt-BR");
+      }
+
+      getValues();
+    </script>
   </body>
 </html>
