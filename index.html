@@ -328,7 +328,13 @@
         params.append("tipo_operacao", tipo_operacao);
         params.append("data_operacao", data_operacao);
         params.append("items", JSON.stringify(items));
+        params.append("preco_total", precoTotal);
 
+        // console.log(params.toString());
+
+        // setTimeout(() => {
+        //   window.location.href = "nfe.html?" + params.toString();
+        // }, 3000);
         location.href = "nfe.html?" + params.toString();
       }
 
