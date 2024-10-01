@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR" moznomarginboxes >
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>NFE</title>
   </head>
   <body>
     <!-- Header -->
@@ -342,6 +342,11 @@
         font-family: Arial !important;
         font-size: 8px !important;
         padding-top: 8px !important;
+      }
+
+      @media print {
+        @page { margin: 0; }
+        body { margin: 1.6cm; }
       }
     </style>
     <!-- /Header -->
@@ -799,6 +804,7 @@
             cellspacing="0"
             border="1"
             class="boxProdutoServico"
+            id="tabela_produtos"
           >
             <thead class="listProdutoServico" id="table">
               <tr class="titles">
@@ -820,7 +826,7 @@
                 <th class="aliqIpi">ALIQ.IPI</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="tabela_produtos_body">
               <tr>
                 <td class="cod" style="width: 15.5mm">CÓDIGO</td>
                 <td class="descrit" style="width: 66.1mm">
@@ -907,114 +913,137 @@
     </div>
 
     <script>
+
       function getValues() {
+        // var infoRecebida = false;
         var params = new URLSearchParams(window.location.search);
 
-        var nome = params.get("nome");
-        var cnpj = params.get("cnpj");
-        var telefone = params.get("telefone");
-        var cep = params.get("cep");
-        var endereco = params.get("endereco");
-        var bairro = params.get("bairro");
-        var uf = params.get("uf");
-        var municipio = params.get("municipio");
-        var tipo_operacao = params.get("tipo_operacao");
-        var data_operacao = params.get("data_operacao");
-        var items = JSON.parse(params.get("items"));
-        var preco_total = parseInt(params.get("preco_total"));
+        console.log(params);
 
-        console.log(
-          nome,
-          cnpj,
-          telefone,
-          cep,
-          endereco,
-          bairro,
-          uf,
-          municipio,
-          tipo_operacao,
-          data_operacao,
-          items,
-          preco_total
-        );
+        if(params.size > 0) {
+          var nome = params.get("nome");
+          var cnpj = params.get("cnpj");
+          var telefone = params.get("telefone");
+          var cep = params.get("cep");
+          var endereco = params.get("endereco");
+          var bairro = params.get("bairro");
+          var uf = params.get("uf");
+          var municipio = params.get("municipio");
+          var tipo_operacao = params.get("tipo_operacao");
+          var data_operacao = params.get("data_operacao");
+          var items = JSON.parse(params.get("items"));
+          var preco_total = parseInt(params.get("preco_total"));
+          
+          console.log(
+            nome,
+            cnpj,
+            telefone,
+            cep,
+            endereco,
+            bairro,
+            uf,
+            municipio,
+            tipo_operacao,
+            data_operacao,
+            items,
+            preco_total
+          );
 
-        var precoTotalFormatado = preco_total.toLocaleString("pt-br", {
-          style: "currency",
-          currency: "BRL",
-        });
-        var valorImposto = preco_total * 0.06;
-        var valorTotalNota = preco_total + valorImposto;
-
-        document.getElementById("tipo_operacao").innerText = tipo_operacao;
-        document.getElementById("cliente_nome").innerText = nome;
-        document.getElementById("cnpj").innerText = cnpj;
-        document.getElementById("endereco").innerText = endereco;
-        document.getElementById("bairro").innerText = bairro;
-        document.getElementById("cep").innerText = cep;
-        document.getElementById("data_operacao").innerText = data_operacao;
-        document.getElementById("municipio").innerText = municipio;
-        document.getElementById("telefone").innerText = telefone;
-        document.getElementById("uf").innerText = uf;
-
-        document.getElementById("data_emissao").innerText =
-          new Date().toLocaleDateString("pt-BR");
-
-        document.getElementById("base_calculo_icms").innerText =
-          precoTotalFormatado;
-
-        document.getElementById("valor_total_produtos").innerText =
-          precoTotalFormatado;
-
-        document.getElementById("valor_icms").innerText =
-          valorImposto.toLocaleString("pt-br", {
+          var precoTotalFormatado = preco_total.toLocaleString("pt-br", {
             style: "currency",
             currency: "BRL",
           });
-        document.getElementById("valor_aproximado_tributo").innerText =
-          valorImposto.toLocaleString("pt-br", {
-            style: "currency",
-            currency: "BRL",
-          });
+          var valorImposto = preco_total * 0.06;
+          var valorTotalNota = preco_total + valorImposto;
 
-        document.getElementById("valor_total_nota").innerText =
-          valorTotalNota.toLocaleString("pt-br", {
-            style: "currency",
-            currency: "BRL",
-          });
+          document.getElementById("tipo_operacao").innerText = tipo_operacao;
+          document.getElementById("cliente_nome").innerText = nome;
+          document.getElementById("cnpj").innerText = cnpj;
+          document.getElementById("endereco").innerText = endereco;
+          document.getElementById("bairro").innerText = bairro;
+          document.getElementById("cep").innerText = cep;
+          document.getElementById("data_operacao").innerText = data_operacao;
+          document.getElementById("municipio").innerText = municipio;
+          document.getElementById("telefone").innerText = telefone;
+          document.getElementById("uf").innerText = uf;
 
-        // document.getElementById("table").innerHTML = items.map((item) => {
-        //   return `
-        //     <tr>
-        //       <td class="cod" style="width: 15.5mm">${item.codigo}</td>
-        //       <td class="descrit" style="width: 66.1mm">${item.descricao}</td>
-        //       <td class="ncmsh">${item.ncmsh}</td>
-        //       <td class="cst">${item.cst}</td>
-        //       <td class="cfop">${item.cfop}</td>
-        //       <td class="un">${item.un}</td>
-        //       <td class="amount">${item.quantidade}</td>
-        //       <td class="valUnit">${item.preco.toLocaleString("pt-br", {
-        //         style: "currency",
-        //         currency: "BRL",
-        //       })}</td>
-        //       <td class="valTotal">${item.total.toLocaleString("pt-br", {
-        //         style: "currency",
-        //         currency: "BRL",
-        //       })}</td>
-        //       <td class="bcIcms">${item.bc_icms}</td>
-        //       <td class="valIcms">${item.icms.toLocaleString("pt-br", {
-        //         style: "currency",
-        //         currency: "BRL",
-        //       })}</td>
-        //       <td class="valIpi">${item.ipi}</td>
-        //       <td class="aliqIcms">${item.aliq_icms}</td>
-        //       <td class="aliqIpi">$
-        //         {item.aliq_ipi}</td>
-        //     </tr>
-        //   `;
-        // });
+          document.getElementById("data_emissao").innerText =
+            new Date().toLocaleDateString("pt-BR");
+
+          document.getElementById("base_calculo_icms").innerText =
+            precoTotalFormatado;
+
+          document.getElementById("valor_total_produtos").innerText =
+            precoTotalFormatado;
+
+          document.getElementById("valor_icms").innerText =
+            valorImposto.toLocaleString("pt-br", {
+              style: "currency",
+              currency: "BRL",
+            });
+          document.getElementById("valor_aproximado_tributo").innerText =
+            valorImposto.toLocaleString("pt-br", {
+              style: "currency",
+              currency: "BRL",
+            });
+
+          document.getElementById("valor_total_nota").innerText =
+            valorTotalNota.toLocaleString("pt-br", {
+              style: "currency",
+              currency: "BRL",
+            });
+
+          document.getElementById("tabela_produtos_body").innerHTML = items.map((item, index) => {
+            return `
+              <tr>
+                <td class="cod" style="width: 15.5mm">${index}</td>
+                <td class="descrit" style="width: 66.1mm">${item.item}</td>
+                <td class="ncmsh"></td>
+                <td class="cst"></td>
+                <td class="cfop"></td>
+                <td class="un">UN</td>
+                <td class="amount">${item.quantidade}</td>
+                <td class="valUnit">${item.valor_unitario.toLocaleString("pt-br", {
+                  style: "currency",
+                  currency: "BRL",
+                })}</td>
+                <td class="valTotal">${item.valor_total.toLocaleString("pt-br", {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}</td>
+                <td class="bcIcms">${item.valor_total.toLocaleString("pt-br", {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}</td>
+                <td class="valIcms">${(item.valor_total * 0.06).toLocaleString("pt-br", {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}</td>
+                <td class="valIpi"></td>
+                <td class="aliqIcms"></td>
+                <td class="aliqIpi"></td>
+              </tr>
+            `;
+          }).join("");
+
+          return true;
+        } else {
+          document.querySelector(".page").innerHTML = "Erro: Nenhuma informação recebida!";
+
+          return false;
+        }
+
+
+
       }
 
-      getValues();
+
+
+      if(getValues()) {
+
+        window.print();
+      }
+      
     </script>
   </body>
 </html>

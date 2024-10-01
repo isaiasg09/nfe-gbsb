@@ -335,7 +335,7 @@
         // setTimeout(() => {
         //   window.location.href = "nfe.html?" + params.toString();
         // }, 3000);
-        location.href = "nfe.html?" + params.toString();
+        window.open("nfe.html?" + params.toString(), "_blank");
       }
 
       // pass();
@@ -491,8 +491,8 @@
         servicos.push({
           item: item,
           quantidade: quantidade,
-          valor_unitario: valor_unitario,
-          valor_total: valor_total,
+          valor_unitario: parseInt(valor_unitario),
+          valor_total: parseInt(valor_total),
         });
 
         precoTotal += parseInt(valor_total);
